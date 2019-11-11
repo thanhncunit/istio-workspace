@@ -194,7 +194,7 @@ var _ = Describe("Operations for openshift DeploymentConfig kind", func() {
 				err := ctx.Client.Get(ctx, types.NamespacedName{Namespace: ctx.Namespace, Name: ref.Name + "-v1-" + ctx.Name}, &deployment)
 				Expect(err).ToNot(HaveOccurred())
 
-				Expect(deployment.Spec.Template.Spec.Containers[0].Image).To(ContainSubstring("datawire/telepresence-k8s:"))
+				Expect(deployment.Spec.Template.Spec.Containers[0].Image).To(ContainSubstring("datawire/telepresence-ocp:"))
 			})
 
 			It("should change add required env variables", func() {
