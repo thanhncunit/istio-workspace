@@ -122,20 +122,20 @@
   version = "v0.19.3"
 
 [[projects]]
-  digest = "1:97b95774863237dc7589e326d064713cc0372c9ecadbe2e4e7e560a949cbb45d"
+  digest = "1:cdf42620f9a19b1717ee2d35c99cac2114eb5b9361de9b632e2d6ba1d35e6cc1"
   name = "github.com/go-openapi/spec"
   packages = ["."]
   pruneopts = "NT"
-  revision = "8557d72e4f077c2dbe1e48df09e596b6fb9b7991"
-  version = "v0.19.4"
+  revision = "772572fd19ebcc983369e53bfaed4bde2077fe0c"
+  version = "v0.19.5"
 
 [[projects]]
   digest = "1:b318f36b1725220c1580b27504b8ee9d33a2a8e2db58f28c176edf6f0d1b7fb2"
   name = "github.com/go-openapi/swag"
   packages = ["."]
   pruneopts = "NT"
-  revision = "c3d0f7896d589f3babb99eea24bbc7de98108e72"
-  version = "v0.19.5"
+  revision = "8a84ec635f1b280a7062edeab609f0667a053248"
+  version = "v0.19.6"
 
 [[projects]]
   digest = "1:c3050a9f4b141fcc3ef805c8b3e8e8242676557755ffb9d2707c26530cd71c9d"
@@ -484,11 +484,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:c2cc5049e927e2749c0d5163c9f8d924880d83e84befa732b9aad0b6be227bed"
+  digest = "1:982be0b5396e16a663697899ce69cc7b1e71ddcae4153af157578d4dc9bc3f88"
   name = "github.com/prometheus/client_model"
   packages = ["go"]
   pruneopts = "NT"
-  revision = "14fe0d1b01d4d5fc031dd4bec1823bd3ebbe8016"
+  revision = "d1d2010b5beead3fa1c5f271a5cf626e40b3ad6e"
 
 [[projects]]
   digest = "1:b1945ace19342a6519ba481285c65a4a3f5c8aff0d940dec53c62206dc68264e"
@@ -633,7 +633,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:00f7cb110ec083a03baf86042414b205078e73bd8d0bb4b7c0e7cd738b880e6a"
+  digest = "1:e0a52102e0e71dbc98124b6cda1423c9b06291ebcf658118b0875b825eace7cf"
   name = "golang.org/x/crypto"
   packages = [
     "cast5",
@@ -646,7 +646,7 @@
     "ssh/terminal",
   ]
   pruneopts = "NT"
-  revision = "ac88ee75c92c889b97e05591e9a39b6480c538b3"
+  revision = "e9b2fee46413994441b28dfca259d911d963dfed"
 
 [[projects]]
   branch = "master"
@@ -661,7 +661,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:c87525a6cba0468e18deed2ea3e196959ecbde257ca52a76483f1b97d15c5da7"
+  digest = "1:9502fc6cda0a919c2790e1123ee4beeb437a5d5886d25b0d78f681e76613c4fa"
   name = "golang.org/x/net"
   packages = [
     "context",
@@ -675,29 +675,29 @@
     "idna",
   ]
   pruneopts = "NT"
-  revision = "ef20fe5d793301b553005db740f730d87993f778"
+  revision = "c0dbc17a35534bf2e581d7a942408dc936316da4"
 
 [[projects]]
   branch = "master"
-  digest = "1:5d90b662c261e7f1385fff27741fe699836398820965566403e31c51e0e03210"
+  digest = "1:291f7a620524099df0114859f017ad4dfd6b26d610309249c69b60f31ebcde61"
   name = "golang.org/x/oauth2"
   packages = [
     ".",
     "internal",
   ]
   pruneopts = "NT"
-  revision = "5d9234df094ce600ff541158d1491aa10d078a47"
+  revision = "858c2ad4c8b6c5d10852cb89079f6ca1c7309787"
 
 [[projects]]
   branch = "master"
-  digest = "1:960535aa7370ed05127519d6a12c86e86b675bfb73cd82a7a27b28e036f39c92"
+  digest = "1:639741b0f8b72ed31d81fdcab52f92ed903985fb354a254d2cbd81d5a547ffd5"
   name = "golang.org/x/sys"
   packages = [
     "unix",
     "windows",
   ]
   pruneopts = "NT"
-  revision = "6d18c012aee9febd81bbf9806760c8c4480e870d"
+  revision = "ac6580df4449443a05718fd7858c1f91ad5f8d20"
 
 [[projects]]
   digest = "1:348fa8283a7c60b5b71ce04d27b37f7c0fce552d4d0b463b5b3ebbd1840d3f1a"
@@ -747,7 +747,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:f083aa21f5ed77008dcf3bb1e36ea028f243479cf5314375464c13f29f86fcb0"
+  digest = "1:2bcaed4edb553aff818df850c9ffd674f7856f7fe2db9a0dc102cff135589613"
   name = "golang.org/x/tools"
   packages = [
     "go/analysis",
@@ -767,21 +767,20 @@
     "internal/imports",
     "internal/module",
     "internal/semver",
-    "internal/span",
   ]
   pruneopts = "NT"
-  revision = "ecd32218bd7f33fd31c1abbfb74283690bedd093"
+  revision = "825cb0626375eeecd4d401e7f1653c1ec405d2c8"
 
 [[projects]]
   branch = "master"
-  digest = "1:c0619d0c0c2f585812ce9f844eafb9c5660f5bd723c9ac0cd60b7fac665d2ac6"
+  digest = "1:325a1b73817aa79fc85f10376ed41ea607f7dd7f6c6bfa46df6a28ef2857941f"
   name = "golang.org/x/xerrors"
   packages = [
     ".",
     "internal",
   ]
   pruneopts = "NT"
-  revision = "1b5146add8981d58be77b16229c0ff0f8bebd8c1"
+  revision = "9bdfabe68543c54f90421aeb9a60ef8061b5b544"
 
 [[projects]]
   digest = "1:8392b5c29adedc5f85c66b48bb53b6c49dd91d8540f3cad5d43ef7277946718f"

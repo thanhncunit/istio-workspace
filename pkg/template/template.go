@@ -37,6 +37,12 @@ func NewDefaultEngine() *Engine {
 				{"op": "replace", "path": "/spec/template/spec/replicas", "value": "1"},
 				{"op": "add", "path": "/spec/template/metadata/labels/telepresence", "value": "test"},
 				{"op": "replace", "path": "/spec/template/spec/containers/0/image", "value": "datawire/telepresence-ocp:{{.Vars.version}}"},
+				{{ if not (.Data.Has "/spec/template/spec/containers/0/securityContext") }}
+				{"op": "add", "path": "/spec/template/spec/containers/0/securityContext", "value": {}},
+				{{ end }}
+				{{ if not (.Data.Has "/spec/template/spec/containers/0/securityContext/capabilities") }}
+				{"op": "add", "path": "/spec/template/spec/containers/0/securityContext/capabilities", "value": {}},
+				{{ end }}
 				{{ if not (.Data.Has "/spec/template/spec/containers/0/securityContext/capabilities/add") }}
 				{"op": "add", "path": "/spec/template/spec/containers/0/securityContext/capabilities/add", "value": []},
 				{{ end }}
