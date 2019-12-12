@@ -32,12 +32,15 @@ func NewDefaultEngine() *Engine {
 			Name: "telepresence",
 			Template: []byte(`
 {{ failIfVariableDoesNotExist .Vars "version" -}}
-[	
+[
 					{{ template "_basic-version" . }}
 				{"op": "replace", "path": "/spec/template/spec/replicas", "value": "1"},
-
 				{"op": "add", "path": "/spec/template/metadata/labels/telepresence", "value": "test"},
 				{"op": "replace", "path": "/spec/template/spec/containers/0/image", "value": "datawire/telepresence-ocp:{{.Vars.version}}"},
+				{{ if not (.Data.Has "/spec/template/spec/containers/0/securityContext/capabilities/add") }}
+				{"op": "add", "path": "/spec/template/spec/containers/0/securityContext/capabilities/add", "value": []},
+				{{ end }}
+				{"op": "add", "path": "/spec/template/spec/containers/0/securityContext/capabilities/add/-", "value": "AUDIT_WRITE"},
 				{{ if not (.Data.Has "/spec/template/spec/containers/0/env") }}
 				{"op": "add", "path": "/spec/template/spec/containers/0/env", "value": []},
 				{{ end }}
