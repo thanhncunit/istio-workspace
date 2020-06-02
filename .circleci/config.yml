@@ -7,7 +7,7 @@ defaults:
   docker:
     - image: &golang-img circleci/golang:1.14.3
   machine-conf: &machine-conf
-    image: ubuntu-1604:201903-01
+    image: ubuntu-1604:202004-01
   skip-e2e-check: &skip-e2e-check
     name: "Check for /skip-e2e directive"
     command: |
