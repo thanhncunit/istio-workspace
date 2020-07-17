@@ -172,14 +172,14 @@ jobs:
           <<: *skip-e2e-check
       - run:
           <<: *golang-install
-      - run:
-          name: "Install telepresence"
-          command: |
-            cd ~
-            pyenv global 3.5.2
-            curl -s https://packagecloud.io/install/repositories/datawireio/telepresence/script.deb.sh | sudo bash
-            sudo apt install --no-install-recommends telepresence
-            telepresence --version
+#      - run:
+#          name: "Install telepresence"
+#          command: |
+#            cd ~
+#            pyenv global 3.5.2
+#            curl -s https://packagecloud.io/install/repositories/datawireio/telepresence/script.deb.sh | sudo bash
+#            sudo apt install --no-install-recommends telepresence
+#            telepresence --version
       - run:
           name: "Configure Docker daemon with insecure-registry"
           command: |
