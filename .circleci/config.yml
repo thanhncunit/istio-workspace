@@ -190,18 +190,52 @@ jobs:
             sudo service docker restart
             echo "Configured Docker daemon with insecure-registry"
       - run:
-          name: "Install microk8s"
+          name: Install Snap
           command: |
-            sudo snap install microk8s --classic
-            sudo ufw default allow routed
+            sudo apt update
+            sudo apt install snapd
+      - run:
+          name: Launch Microk8s
+          command: |
+            sudo snap install microk8s --classic --channel=1.18/stable
+            # wait until a k8s node is ready
+            sleep 10
+            n=0
+            until [ $n -ge 10 ]
+            do
+              (/snap/bin/microk8s.kubectl get no | grep -z "Ready") && break
+              n=$[$n+1]
+              sleep 20
+            done
+            echo "Kubernetes cluster launched"
+            # Allow intra-pod communication
             sudo iptables -P FORWARD ACCEPT
 
-            microk8s.enable dns dashboard metrics-server istio
-            sudo snap alias microk8s.kubectl kubectl
+            echo n |/snap/bin/microk8s.enable dns registry istio
 
-            echo "running tests... ;)"
+            # wait until the registry is up and running
+            sleep 10
+            n=0
+            until [ $n -ge 10 ]
+            do
+              (/snap/bin/microk8s.kubectl get pod --namespace=container-registry | grep -z "Running") && break
+              n=$[$n+1]
+              sleep 10
+            done
+            echo "Kubernetes Container Registry enabled"
 
-            sudo snap unalias kubectl
+            # wait until istio is up and running
+            sleep 10
+            n=0
+            until [ $n -ge 10 ]
+            do
+              (/snap/bin/microk8s.kubectl get pod -l istio=sidecar-injector --namespace=istio-system | grep -z "Running") && break
+              n=$[$n+1]
+              sleep 10
+            done
+            echo "Istio enabled"
+            # create the namespace where the istio integration test will run
+            /snap/bin/microk8s.kubectl create -f .circleci/istio-test-namespace.yml
       - restore_cache:
           keys:
             - golang-deps-e2e-cache-{{ checksum "Gopkg.lock" }}
