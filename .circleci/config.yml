@@ -142,6 +142,83 @@ jobs:
           paths:
             - ./e2e-openshift-4.githash
 
+  ## End-to-end testing using single-node microk8s cluster
+  e2e_tests_microk8s:
+    working_directory: ~/.go_workspace/src/github.com/maistra/istio-workspace
+    machine:
+      <<: *machine-conf
+    environment:
+      <<: *env-vars
+    steps:
+      - checkout
+      - run:
+          name: "Obtain git tree hash"
+          command: |
+            git rev-parse HEAD: > /tmp/e2e-microk8s.githash
+      - restore_cache:
+          keys:
+            - e2e-cache-{{ checksum "/tmp/e2e-microk8s.githash" }}
+      - run:
+          name: "Check if build with this content was already executed"
+          command: |
+            if [[ -f e2e-microk8s.githash ]]; then
+              echo "This exact code base has been successfully built"
+              circleci step halt
+            else
+              echo "New build - if suceeds build git hash will be cached"
+              cp /tmp/e2e-microk8s.githash e2e-microk8s.githash
+            fi
+
+      - run:
+          <<: *skip-e2e-check
+      - run:
+          <<: *golang-install
+      - run:
+          name: "Install telepresence"
+          command: |
+            cd ~
+            pyenv global 3.5.2
+            curl -s https://packagecloud.io/install/repositories/datawireio/telepresence/script.deb.sh | sudo bash
+            sudo apt install --no-install-recommends telepresence
+            telepresence --version
+      - run:
+          name: "Configure Docker daemon with insecure-registry"
+          command: |
+            json=`mktemp`
+            echo '{ "insecure-registries": [ "172.30.0.0/16", "registry.access.redhat.com", "localhost:32000"] }' > ${json}
+            sudo mv ${json} /etc/docker/daemon.json
+            sudo service docker restart
+            echo "Configured Docker daemon with insecure-registry"
+      - run:
+          name: "Install microk8s"
+          command: |
+            snap install microk8s --classic
+            sudo ufw default allow routed
+            sudo iptables -P FORWARD ACCEPT
+
+            microk8s.enable dns dashboard metrics-server istio
+            snap alias microk8s.kubectl kubectl
+
+            echo "running tests... ;)"
+
+            snap unalias kubectl
+      - restore_cache:
+          keys:
+            - golang-deps-e2e-cache-{{ checksum "Gopkg.lock" }}
+      - run:
+          name: "Run end-to-end tests"
+          command: |
+            microk8s.status
+            microk8s.inspect
+      - save_cache:
+          key: golang-deps-e2e-cache-{{ checksum "Gopkg.lock" }}
+          paths:
+            - ./vendor
+      - save_cache:
+          key: e2e-cache-{{ checksum "e2e-microk8s.githash" }}
+          paths:
+            - ./e2e-microk8s.githash
+
   release:
     working_directory: ~/.go_workspace/src/github.com/maistra/istio-workspace
     machine:
@@ -184,6 +261,7 @@ workflows:
       - build
   circleci_e2e_tests:
     jobs:
+      - e2e_tests_microk8s
       - e2e_tests_remote_openshift_4
   circleci_release:
     jobs:
