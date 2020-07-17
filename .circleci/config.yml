@@ -190,11 +190,6 @@ jobs:
             sudo service docker restart
             echo "Configured Docker daemon with insecure-registry"
       - run:
-          name: Install Snap
-          command: |
-            sudo apt update
-            sudo apt install snapd
-      - run:
           name: Launch Microk8s
           command: |
             sudo snap install microk8s --classic --channel=1.18/stable
