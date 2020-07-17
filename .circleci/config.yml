@@ -192,16 +192,16 @@ jobs:
       - run:
           name: "Install microk8s"
           command: |
-            snap install microk8s --classic
+            sudo snap install microk8s --classic
             sudo ufw default allow routed
             sudo iptables -P FORWARD ACCEPT
 
             microk8s.enable dns dashboard metrics-server istio
-            snap alias microk8s.kubectl kubectl
+            sudo snap alias microk8s.kubectl kubectl
 
             echo "running tests... ;)"
 
-            snap unalias kubectl
+            sudo snap unalias kubectl
       - restore_cache:
           keys:
             - golang-deps-e2e-cache-{{ checksum "Gopkg.lock" }}
