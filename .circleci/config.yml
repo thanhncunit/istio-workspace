@@ -250,7 +250,10 @@ jobs:
 
             sudo snap alias microk8s.kubectl kubectl
 
-            kubectl version
+            sudo kubectl version
+
+            sudo microk8s.kubectl config view --raw > /tmp/kubeconfig
+            export KUBECONFIG=/tmp/kubeconfig
       - save_cache:
           key: golang-deps-e2e-cache-{{ checksum "Gopkg.lock" }}
           paths:
