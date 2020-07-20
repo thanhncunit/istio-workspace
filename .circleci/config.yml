@@ -235,7 +235,7 @@ jobs:
               sleep 10
             done
             echo "Istio enabled"
-            kubectl version
+            sudo kubectl version
 
       - restore_cache:
           keys:
