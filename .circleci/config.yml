@@ -193,7 +193,8 @@ jobs:
       - run:
           name: Launch Microk8s
           command: |
-            sudo snap install microk8s --classic
+            sudo -H -s -E
+            snap install microk8s --classic
             sudo snap alias microk8s.kubectl kubectl
 
             # wait until a k8s node is ready
@@ -233,6 +234,9 @@ jobs:
               sleep 10
             done
             echo "Istio enabled"
+
+            sudo usermod -a -G microk8s $USER
+            sudo chown -f -R circleci ~/.kube
 
       - restore_cache:
           keys:
