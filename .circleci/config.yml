@@ -237,14 +237,20 @@ jobs:
             echo "Istio enabled"
             sudo kubectl version
 
+            sudo usermod -a -G microk8s circleci
+            sudo chown -f -R circleci ~/.kube
       - restore_cache:
           keys:
             - golang-deps-e2e-cache-{{ checksum "Gopkg.lock" }}
       - run:
           name: "Run end-to-end tests"
           command: |
-            sudo microk8s.status
-            sudo microk8s.inspect
+            microk8s.status
+            microk8s.inspect
+
+            sudo snap alias microk8s.kubectl kubectl
+
+            kubectl version
       - save_cache:
           key: golang-deps-e2e-cache-{{ checksum "Gopkg.lock" }}
           paths:
