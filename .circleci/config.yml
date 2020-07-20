@@ -240,11 +240,10 @@ jobs:
       - run:
           name: "Run end-to-end tests"
           command: |
-            sudo -s
-            snap alias microk8s.kubectl kubectl
-            microk8s.kubectl config view --raw > /tmp/kubeconfig
+            sudo snap alias microk8s.kubectl kubectl
+            sudo kubectl config view --raw > /tmp/kubeconfig
             export KUBECONFIG=/tmp/kubeconfig
-            kubectl version
+            sudo kubectl version
       - save_cache:
           key: golang-deps-e2e-cache-{{ checksum "Gopkg.lock" }}
           paths:
