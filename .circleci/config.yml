@@ -194,31 +194,30 @@ jobs:
           name: Launch Microk8s
           command: |
             sudo snap install microk8s --classic
-            sudo -s
-            snap alias microk8s.kubectl kubectl
+            sudo snap alias microk8s.kubectl kubectl
 
             # wait until a k8s node is ready
             sleep 10
             n=0
             until [ $n -ge 10 ]
             do
-              (kubectl get no | grep -z "Ready") && break
+              (sudo kubectl get no | grep -z "Ready") && break
               n=$[$n+1]
               sleep 20
             done
             echo "Kubernetes cluster launched"
 
             # Allow intra-pod communication
-            iptables -P FORWARD ACCEPT
+            sudo iptables -P FORWARD ACCEPT
 
-            echo n | microk8s.enable dns registry istio
+            echo n | sudo microk8s.enable dns registry istio
 
             # wait until the registry is up and running
             sleep 10
             n=0
             until [ $n -ge 10 ]
             do
-              (kubectl get pod --namespace=container-registry | grep -z "Running") && break
+              (sudo kubectl get pod --namespace=container-registry | grep -z "Running") && break
               n=$[$n+1]
               sleep 10
             done
@@ -229,7 +228,7 @@ jobs:
             n=0
             until [ $n -ge 10 ]
             do
-              (kubectl get pod -l istio=sidecar-injector --namespace=istio-system | grep -z "Running") && break
+              (sudo kubectl get pod -l istio=sidecar-injector --namespace=istio-system | grep -z "Running") && break
               n=$[$n+1]
               sleep 10
             done
