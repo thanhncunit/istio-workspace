@@ -193,33 +193,32 @@ jobs:
       - run:
           name: Launch Microk8s
           command: |
-            sudo snap install microk8s --classic
-            sudo snap alias microk8s.kubectl kubectl
+            sudo -s
+            snap install microk8s --classic
+            snap alias microk8s.kubectl kubectl
+
             # wait until a k8s node is ready
             sleep 10
             n=0
             until [ $n -ge 10 ]
             do
-              (sudo /snap/bin/microk8s.kubectl get no | grep -z "Ready") && break
+              (kubectl get no | grep -z "Ready") && break
               n=$[$n+1]
               sleep 20
             done
             echo "Kubernetes cluster launched"
+
             # Allow intra-pod communication
-            sudo iptables -P FORWARD ACCEPT
+            iptables -P FORWARD ACCEPT
 
-            # Dump kubeconfig
-            sudo /snap/bin/microk8s.config > microk8s.yaml
-            export KUBECONFIG=$PWD/microk8s.yaml
-
-            echo n | sudo /snap/bin/microk8s.enable dns registry istio
+            echo n | microk8s.enable dns registry istio
 
             # wait until the registry is up and running
             sleep 10
             n=0
             until [ $n -ge 10 ]
             do
-              (sudo /snap/bin/microk8s.kubectl get pod --namespace=container-registry | grep -z "Running") && break
+              (kubectl get pod --namespace=container-registry | grep -z "Running") && break
               n=$[$n+1]
               sleep 10
             done
@@ -230,28 +229,20 @@ jobs:
             n=0
             until [ $n -ge 10 ]
             do
-              (sudo /snap/bin/microk8s.kubectl get pod -l istio=sidecar-injector --namespace=istio-system | grep -z "Running") && break
+              (kubectl get pod -l istio=sidecar-injector --namespace=istio-system | grep -z "Running") && break
               n=$[$n+1]
               sleep 10
             done
             echo "Istio enabled"
-            sudo kubectl version
 
-            sudo usermod -a -G microk8s circleci
-            sudo chown -f -R circleci ~/.kube
       - restore_cache:
           keys:
             - golang-deps-e2e-cache-{{ checksum "Gopkg.lock" }}
       - run:
           name: "Run end-to-end tests"
           command: |
-            sudo microk8s.status
-            sudo microk8s.inspect
-
-            sudo snap alias microk8s.kubectl kubectl
-
-            sudo kubectl version
             sudo -s
+            snap alias microk8s.kubectl kubectl
             microk8s.kubectl config view --raw > /tmp/kubeconfig
             export KUBECONFIG=/tmp/kubeconfig
             kubectl version
