@@ -193,8 +193,8 @@ jobs:
       - run:
           name: Launch Microk8s
           command: |
+            sudo snap install microk8s --classic
             sudo -s
-            snap install microk8s --classic
             snap alias microk8s.kubectl kubectl
 
             # wait until a k8s node is ready
