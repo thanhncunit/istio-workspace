@@ -194,6 +194,7 @@ jobs:
           name: Launch Microk8s
           command: |
             sudo snap install microk8s --classic
+            sudo snap alias microk8s.kubectl kubectl
             # wait until a k8s node is ready
             sleep 10
             n=0
@@ -206,6 +207,10 @@ jobs:
             echo "Kubernetes cluster launched"
             # Allow intra-pod communication
             sudo iptables -P FORWARD ACCEPT
+
+            # Dump kubeconfig
+            sudo /snap/bin/microk8s.config > microk8s.yaml
+            export KUBECONFIG=$PWD/microk8s.yaml
 
             echo n | sudo /snap/bin/microk8s.enable dns registry istio
 
@@ -230,6 +235,7 @@ jobs:
               sleep 10
             done
             echo "Istio enabled"
+            kubectl version
 
       - restore_cache:
           keys:
