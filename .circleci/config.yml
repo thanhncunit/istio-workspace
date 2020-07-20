@@ -245,8 +245,8 @@ jobs:
       - run:
           name: "Run end-to-end tests"
           command: |
-            microk8s.status
-            microk8s.inspect
+            sudo microk8s.status
+            sudo microk8s.inspect
 
             sudo snap alias microk8s.kubectl kubectl
 
