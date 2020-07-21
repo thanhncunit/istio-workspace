@@ -191,16 +191,15 @@ jobs:
             sudo service docker restart
             echo "Configured Docker daemon with insecure-registry"
       - run:
+          name: Install official kubectl
+          command: |
+            curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.18.4/bin/linux/amd64/kubectl
+            chmod +x kubectl && sudo mv kubectl /usr/local/bin/
+            echo "Installed kubectl\n$(kubectl version)\n"
+      - run:
           name: Launch Microk8s
           command: |
             sudo snap install microk8s --classic
-            sudo snap alias microk8s.kubectl kubectl
-
-            sudo chmod 777 /var/snap/microk8s/current/credentials/
-            sudo chmod 666 /var/snap/microk8s/current/credentials/client.config
-
-            sudo chmod 777 /var/snap/microk8s/current/args/
-            sudo chmod 666 /var/snap/microk8s/current/args/kubectl
 
             # wait until a k8s node is ready
             sleep 10
@@ -240,8 +239,6 @@ jobs:
             done
             echo "Istio enabled"
 
-            sudo usermod -a -G microk8s $USER
-            sudo chown -f -R circleci ~/.kube
 
       - restore_cache:
           keys:
@@ -249,10 +246,9 @@ jobs:
       - run:
           name: "Run end-to-end tests"
           command: |
-            sudo snap alias microk8s.kubectl kubectl
-            sudo kubectl config view --raw > /tmp/kubeconfig
+            sudo microk8s.kubectl config view --raw > /tmp/kubeconfig
             export KUBECONFIG=/tmp/kubeconfig
-            kubectl version
+            kubectl get pods -n istio-system
       - save_cache:
           key: golang-deps-e2e-cache-{{ checksum "Gopkg.lock" }}
           paths:
