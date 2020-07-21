@@ -50,12 +50,11 @@ func DeployTestScenario(scenario, namespace string) {
 }
 
 func CleanupTestScenario(namespace string) {
-	if e2e_test.RunAgainstOpenshift {
-
+	if RunsAgainstOpenshift {
+		removeNsSubCmd := `oc get ServiceMeshMemberRoll default -n ` + GetIstioNamespace() + ` -o json | jq -c '.spec.members | map(select(. != "` + namespace + `"))'`
+		patchCmd := `oc -n ` + GetIstioNamespace() + ` patch --type='json' smmr default -p "[{\"op\": \"replace\", \"path\": \"/spec/members\", \"value\": $(` + removeNsSubCmd + `) }]"`
+		<-shell.ExecuteInDir(".", "bash", "-c", patchCmd).Done()
 	}
-	removeNsSubCmd := `oc get ServiceMeshMemberRoll default -n ` + GetIstioNamespace() + ` -o json | jq -c '.spec.members | map(select(. != "` + namespace + `"))'`
-	patchCmd := `oc -n ` + GetIstioNamespace() + ` patch --type='json' smmr default -p "[{\"op\": \"replace\", \"path\": \"/spec/members\", \"value\": $(` + removeNsSubCmd + `) }]"`
-	<-shell.ExecuteInDir(".", "bash", "-c", patchCmd).Done()
 }
 
 // GetProjectLabels returns labels for a given namespace as a string.

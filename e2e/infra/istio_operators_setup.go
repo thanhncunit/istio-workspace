@@ -52,7 +52,7 @@ func GetIstioIngressHostname() string {
 	if istioIngress, found := os.LookupEnv("IKE_ISTIO_INGRESS"); found {
 		return istioIngress
 	}
-	
+
 	cmd := shell.ExecuteInDir(".", "bash", "-c", fmt.Sprintf("kubectl get svc istio-ingressgateway -n %v -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'", GetIstioNamespace()))
 	<-cmd.Done()
 	if cmd.Status().Exit == 0 && len(cmd.Status().Stdout) > 0 {
