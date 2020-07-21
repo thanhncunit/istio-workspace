@@ -38,8 +38,10 @@ var _ = Describe("Smoke End To End Tests - Faulty scenarios", func() {
 
 			<-testshell.Execute(NewProjectCmd(namespace)).Done()
 
-			UpdateSecurityConstraintsFor(namespace)
-			EnablePullingImages(namespace)
+			if RunsAgainstOpenshift {
+				UpdateSecurityConstraintsFor(namespace)
+				EnablePullingImages(namespace)
+			}
 			InstallLocalOperator(namespace)
 		})
 
@@ -78,7 +80,7 @@ var _ = Describe("Smoke End To End Tests - Faulty scenarios", func() {
 				Expect(ikeWithWatch.Status().Exit).ToNot(Equal(0))
 
 				// when
-				sessions := testshell.ExecuteInDir(tmpDir, "oc", "get", "sessions", "-n", namespace)
+				sessions := testshell.ExecuteInDir(tmpDir, "kubectl", "get", "sessions", "-n", namespace)
 				Eventually(sessions.Done(), 1*time.Minute).Should(BeClosed())
 
 				// then

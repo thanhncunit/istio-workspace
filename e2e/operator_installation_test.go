@@ -69,7 +69,7 @@ var _ = Describe("Operator Installation Tests", func() {
 })
 
 func ensureOperatorPodIsRunning(operatorPodName, projectName string) {
-	podDetails := testshell.Execute("oc get pod " + operatorPodName + " -o yaml")
+	podDetails := testshell.Execute("kubectl get pod " + operatorPodName + "-n " + projectName + " -o yaml")
 	<-podDetails.Done()
 
 	detailsYaml := strings.Join(podDetails.Status().Stdout, "\n")

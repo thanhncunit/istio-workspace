@@ -56,10 +56,12 @@ var _ = Describe("Bash Completion Tests", func() {
 			Expect(nsCompletion).To(ContainElement(CompletionProject2))
 		})
 
-		It("should show available deployments for current namespace (datawire-project)", func() {
-			<-shell.Execute("oc project " + CompletionProject1).Done()
-			Expect(completionFor("ike develop -d ")).To(ConsistOf("my-datawire-deployment"))
-		})
+		if RunsAgainstOpenshift {
+			It("should show available deployments for current namespace (datawire-project)", func() {
+				<-shell.Execute("oc project " + CompletionProject1).Done()
+				Expect(completionFor("ike develop -d ")).To(ConsistOf("my-datawire-deployment"))
+			})
+		}
 
 		It("should show available deployments for selected namespace (datawire-other-project)", func() {
 			Expect(completionFor("ike develop -n " + CompletionProject2 + " -d ")).To(ConsistOf("other-1-datawire-deployment", "other-2-datawire-deployment"))

@@ -2,11 +2,14 @@ package infra
 
 import (
 	"fmt"
+	shell2 "github.com/maistra/istio-workspace/pkg/shell"
 	"io"
 	"os"
 
 	"github.com/maistra/istio-workspace/test/shell"
 )
+
+var RunsAgainstOpenshift = shell2.BinaryExists("oc", "")
 
 // UpdateSecurityConstraintsFor applies anyuid and privileged constraints to a given namespace.
 func UpdateSecurityConstraintsFor(namespace string) {
@@ -44,7 +47,7 @@ func LoginAsTestPowerUser() {
 
 // GetEvents returns all events which occurred for a given namespace.
 func GetEvents(ns string) {
-	state := shell.Execute("oc get events -n " + ns)
+	state := shell.Execute("kubectl get events -n " + ns)
 	<-state.Done()
 }
 

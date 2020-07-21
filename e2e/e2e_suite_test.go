@@ -44,13 +44,16 @@ var _ = SynchronizedBeforeSuite(func() []byte {
 	ensureRequiredBinaries()
 
 	executeWithTimer(func() {
-		LoginAsTestPowerUser()
+		if RunsAgainstOpenshift {
+			LoginAsTestPowerUser()
 
-		fmt.Printf("\nExposing Docker Registry\n")
-		<-testshell.Execute(`oc patch configs.imageregistry.operator.openshift.io/cluster --patch '{"spec":{"defaultRoute":true}}' --type=merge`).Done()
+			fmt.Printf("\nExposing Docker Registry\n")
+			<-testshell.Execute(`oc patch configs.imageregistry.operator.openshift.io/cluster --patch '{"spec":{"defaultRoute":true}}' --type=merge`).Done()
 
-		<-testshell.Execute(NewProjectCmd(ImageRepo)).Done()
-		UpdateSecurityConstraintsFor(ImageRepo)
+			<-testshell.Execute(NewProjectCmd(ImageRepo)).Done()
+
+			UpdateSecurityConstraintsFor(ImageRepo)
+		}
 
 		BuildOperator()
 		BuildTestService()
@@ -95,7 +98,9 @@ func deleteProjectsForCompletionTests() {
 
 func ensureRequiredBinaries() {
 	Expect(shell.BinaryExists("ike", "make sure you have binary in the ./dist folder. Try make compile at least")).To(BeTrue())
-	Expect(shell.BinaryExists("oc", "grab latest openshift origin client tools from here https://github.com/openshift/origin/releases")).To(BeTrue())
+	ocExists := shell.BinaryExists("oc", "")
+	kubectlExists := shell.BinaryExists("kubectl", "")
+	Expect(kubectlExists || ocExists).To(BeTrue(), "make sure you have oc or kubectl installed")
 	Expect(shell.BinaryExists("python3", "make sure you have python3 installed")).To(BeTrue())
 }
 
