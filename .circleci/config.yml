@@ -199,6 +199,9 @@ jobs:
       - run:
           name: Launch Microk8s
           command: |
+            sudo microk8s.kubectl config view --raw > /tmp/kubeconfig
+            export KUBECONFIG=/tmp/kubeconfig
+
             sudo snap install microk8s --classic
 
             # wait until a k8s node is ready
