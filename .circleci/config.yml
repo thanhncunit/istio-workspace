@@ -252,7 +252,9 @@ jobs:
             sudo microk8s.kubectl config view --raw > /tmp/kubeconfig
             export KUBECONFIG=/tmp/kubeconfig
             IKE_CLUSTER_HOST=localhost \
-            IKE_ISTIO_INGRESS=localhost:31380
+            IKE_ISTIO_INGRESS=localhost:31380 \
+            IKE_INTERNAL_DOCKER_REGISTRY=localhost:32000 \
+            IKE_EXTERNAL_DOCKER_REGISTRY=localhost:32000 \
             make deps test-e2e
       - save_cache:
           key: golang-deps-e2e-cache-{{ checksum "Gopkg.lock" }}

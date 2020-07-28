@@ -47,7 +47,7 @@ func DeployTestScenario(scenario, namespace string) {
 			return GetProjectLabels(namespace)
 		}, 1*time.Minute).Should(gomega.ContainSubstring("maistra.io/member-of"))
 	} else {
-
+		<-shell.ExecuteInDir(".", "bash", "-c", "kubectl label "+namespace+" ike-test istio-injection=enabled").Done()
 	}
 	<-shell.ExecuteInDir(projectDir, "make", "deploy-test-"+scenario).Done()
 }
