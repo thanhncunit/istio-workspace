@@ -17,7 +17,9 @@ func BuildOperator() (registry string) {
 	setDockerRepository(ImageRepo)
 	<-shell.Execute(NewProjectCmd(namespace)).Done()
 	EnablePullingImages(namespace)
-	<-shell.ExecuteInDir(".", "bash", "-c", "docker login -u "+user+" -p $(oc whoami -t) "+registry).Done()
+	if RunsAgainstOpenshift {
+		<-shell.ExecuteInDir(".", "bash", "-c", "docker login -u "+user+" -p $(oc whoami -t) "+registry).Done()
+	}
 	<-shell.ExecuteInDir(projectDir, "make", "docker-build", "docker-push").Done()
 	return
 }
