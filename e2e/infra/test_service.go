@@ -40,12 +40,15 @@ func DeployTestScenario(scenario, namespace string) {
 	projectDir := shell.GetProjectDir()
 	setDockerRegistryInternal()
 	setDockerEnvForTestServiceDeploy(namespace)
+	if RunsAgainstOpenshift {
+		<-shell.ExecuteInDir(".", "bash", "-c",
+			`oc -n `+GetIstioNamespace()+` patch --type='json' smmr default -p '[{"op": "add", "path": "/spec/members/-", "value":"`+namespace+`"}]'`).Done()
+		gomega.Eventually(func() string {
+			return GetProjectLabels(namespace)
+		}, 1*time.Minute).Should(gomega.ContainSubstring("maistra.io/member-of"))
+	} else {
 
-	<-shell.ExecuteInDir(".", "bash", "-c",
-		`oc -n `+GetIstioNamespace()+` patch --type='json' smmr default -p '[{"op": "add", "path": "/spec/members/-", "value":"`+namespace+`"}]'`).Done()
-	gomega.Eventually(func() string {
-		return GetProjectLabels(namespace)
-	}, 1*time.Minute).Should(gomega.ContainSubstring("maistra.io/member-of"))
+	}
 	<-shell.ExecuteInDir(projectDir, "make", "deploy-test-"+scenario).Done()
 }
 
